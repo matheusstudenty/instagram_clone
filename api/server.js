@@ -65,7 +65,7 @@ app.get('/api/:id', function(req, res){
                 if(err){
                     res.json(err);
                 } else {
-                    res.json(results);
+                    res.status(200).json(results);
                 }
                 mongoclient.close();
             });
@@ -111,4 +111,4 @@ app.delete('/api/:id', function(req, res){
     });
 });
 
-//aula 135 menu 20
+//aula 139 menu 20
