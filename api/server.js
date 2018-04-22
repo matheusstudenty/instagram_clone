@@ -11,6 +11,15 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 app.use(multiparty());
+app.use(function(req, res, next){
+    
+    res.setHeader("Access-Control-Allow-Origin","*");
+    res.setHeader("Access-Control-Allow-Methods","GET, POST, PUT, DELETE");
+    res.setHeader("Access-Control-Allow-Headers","Content-type");
+    res.setHeader("Access-Control-Allow-Credentials", true);
+
+    next();
+});
 
 var port = 8080;
 
@@ -30,7 +39,7 @@ app.get('/', function(req, res){
 
 app.post('/api', function(req, res){
 
-    res.setHeader("Access-Control-Allow-Origin","*");
+    //res.setHeader("Access-Control-Allow-Origin","*");
 
     var date = new Date();
     time_stamp = date.getTime();
@@ -69,7 +78,7 @@ app.post('/api', function(req, res){
 
 app.get('/api', function(req, res){
 
-    res.setHeader("Access-Control-Allow-Origin","*");
+    //res.setHeader("Access-Control-Allow-Origin","*");
 
     db.open( function(err, mongoclient){
         mongoclient.collection('postagens', function(err, collection){
@@ -118,7 +127,13 @@ app.put('/api/:id', function(req, res){
         mongoclient.collection('postagens', function(err, collection){
             collection.update(
                 { _id: objectId(req.params.id) },
-                { $set: { titulo: req.body.titulo }},
+                { $push: {  
+                            comentarios: {
+                                id_comentario: new objectId(),
+                                comentario: req.body.comentario
+                            } 
+                         }
+                },
                 {},
                 function(err, records){
                     if(err){
@@ -151,4 +166,4 @@ app.delete('/api/:id', function(req, res){
     });
 });
 
-//aula 145 menu 20
+//aula 152 menu 20
