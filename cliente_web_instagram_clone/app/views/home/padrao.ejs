@@ -32,13 +32,44 @@
 											data[i].titulo +
 										'</span>'+
 										'<img width="80%" height="80%" src="http://localhost:8080/imagens/'+ data[i].url_imagem + '"/>' +
-											'<div class="comentar">'+
-												'<input name="postagem" type="text" class="form-control input_comentario" id="postagem_'+data[i]._id+'" placeholder="Adicione um comentário...">' +
-												'<button class="btn btn-default btn_postagem" value="'+data[i]._id+'" type="buttin">Comentar</button>' +
-											'</div>'+
+										'<div class="comentarios" id="comentarios_'+data[i]._id+'"></div>'+
+										'<div class="comentar">'+
+											'<input name="postagem" type="text" class="form-control input_comentario" id="postagem_'+data[i]._id+'" placeholder="Adicione um comentário...">' +
+											'<button class="btn btn-default btn_postagem" value="'+data[i]._id+'" type="buttin">Comentar</button>' +
+										'</div>'+
 									'</div>'
 								);
+
+								if(data[i].comentarios != undefined){
+									var comentarios = data[i].comentarios;
+
+									for( j = 0; j < comentarios.length; j++){
+										$('#comentarios_'+data[i]._id).append(
+											'<div class="txt_comentario">'+
+												'<button class="btn btn-default btn_remover_postagem" type="button" value="'+comentarios[j].id_comentario+'"> X </button> '+
+												comentarios[j].comentario +
+											'</div>'
+										);
+									}
+								}
 							}
+
+							$('.btn_remover_postagem').click(function(){
+								var id_comentario = this.value;
+								
+								var xhr = new XMLHttpRequest();
+								xhr.open('DELETE', 'http://localhost:8080/api/'+id_comentario);
+								//xhr.send('{comentario:'+ comentario +'}');								
+								xhr.onload = function(){
+									if(xhr.status === 200){
+										window.location.href = "./home";
+									}
+								}
+
+								xhr.send();
+								
+							
+							});
 
 							$('.btn_postagem').click(function(){
 								var id = this.value;
